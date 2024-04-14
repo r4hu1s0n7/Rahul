@@ -12,7 +12,7 @@ pygmentsUseClasses: true
 
 googleAnalytics: UA-123-45
 
-
+publishDir: "docs"
 params:
     env: development # to enable google analytics, opengraph, twitter-cards and schema.
     
