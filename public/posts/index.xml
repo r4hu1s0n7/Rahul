@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on </title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 12 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Diving into Sockets</title>
+      <link>http://localhost:1313/posts/tempblog/</link>
+      <pubDate>Tue, 12 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/tempblog/</guid>
+      <description>This discussion is based on learning about sockets from scratch to trying to build an application.
+Basic Google definition is: A socket is a communication endpoint in a computer network that allows two computers to communicate with each other.
+So, on a daily basis, for simplicity, we use WebSockets, or more accurately, we use a library for WebSockets. The WebSocket protocol, which is a browser-focused extension of sockets, uses TCP sockets behind the scenes.</description>
+      <content:encoded><![CDATA[<p>This discussion is based on  learning about sockets from scratch to trying to build an application.</p>
+<p>Basic Google definition is: <em>A socket is a communication endpoint in a computer network that allows two computers to communicate with each other.</em></p>
+<p>So, on a daily basis, for simplicity, we use WebSockets, or more accurately, we use a library for WebSockets. The WebSocket protocol, which is a browser-focused extension of sockets, uses TCP sockets behind the scenes.</p>
+<p>There are also UDP sockets but we will learn about TCP ones.</p>
+<h3 id="tcp-sockets">TCP Sockets</h3>
+<p>TCP Socket or Raw Socket, or maybe vanilla socket, has one job: to transfer data from one endpoint to another, that&rsquo;s it. Nothing like maintaining a buffer or so, because this just uses the basic protocol and provides us the most core thing, which is a bridge or pathway of communication.</p>
+<p>We just get the bytes; their handling and parsing also need to be taken care of separately by users, which could be some high-level code or anything else.</p>
+<p>It just gets the job done at the lowest possible level, like sending and receiving data to a specific address. Since the core functionality is provided, Now we can add our own wrappers around it and make it robust and reliable.</p>
+<h4 id="connections">Connections</h4>
+<p>Before a client can connect to a server, the server must first bind to address and listen on a port to open it up for connections.</p>
+<p>The Network can handle multiple connections on the same port. So how does it identify a device uniquely? Well, with a pair of source IP and port, and destination IP and port, we can uniquely identify a connection. So my server listening on port 80 could be listening to multiple clients.</p>
+<p>(10.20.30.40:80) -&gt; (100.0.0.0:80) and (50.60.70.80:80) -&gt; (100.0.0.0:80)
+are 2 different clients, pointing to same server ip. this would make 2 connections</p>
+<h3 id="web-sockets">Web Sockets</h3>
+<p>So we have established communication, and now we&rsquo;re adding more functionality. We have the WebSocket protocol now. We can refer to its implementation in the WebSocket() API that the browser provides.</p>
+<pre tabindex="0"><code>    var ws = new WebSocket(&#39;wss://example.com/socket&#39;);
+
+    ws.onerror = function (error) { ... }
+    ws.onclose = function () { ... }
+
+    ws.onopen = function () {
+    ws.send(&#34;Connection established. Hello server!&#34;);
+    }
+
+    ws.onmessage = function(msg) {
+    if(msg.data instanceof Blob) {
+        processBlob(msg.data);
+    } else {
+        processText(msg.data);
+    }
+}
+</code></pre><p>The WebSocket() API communication consists of messages, and the application code and user do not need to worry about buffering, parsing, and reconstructing received data. For example, if the server sends a 1 MB payload, the application&rsquo;s onmessage callback will be called only when the entire message is available on the client.</p>
+<p>TCP Socket, depending on payload limit, once the entire data is received, alerts this is callback and it is executed on higher level. To call the rest of application code.</p>
+<h4 id="steps-involved-in-communication">Steps involved in communication</h4>
+<ol>
+<li>
+<p>It starts with a three-way handshake using TCP: SYN → SYN/ACK → ACK. We can read more about this in the Cloudflare <a href="https://blog.cloudflare.com/syn-packet-handling-in-the-wild">blog on SYN and ACK queues</a>. When you go in-depth, and analyse the message passing, we can see the source and destination IP switch in each packet of this handshake.</p>
+</li>
+<li>
+<p>Once the connection is established, we send the HTTP Request, which WebSocket uses to upgrade the connection from HTTP to WebSocket:</p>
+<ul>
+<li>Client sends: <code>Connection: Upgrade</code> request</li>
+</ul>
+</li>
+<li>
+<p>The server responds with an acknowledgment of switching protocols.</p>
+</li>
+<li>
+<p>Now the client sends a message, and the server acknowledges (ACKs) it. The same happens if the server sends something; the client acknowledges (ACKs) it. This is where the whole communication happens and this is repeated on every message passed. It is not in sequence like Request-Response cycle, rather anyone can initiate message and other has to ACK.</p>
+</li>
+<li>
+<p>Finally, the close is initiated or timedout.</p>
+</li>
+</ol>
+<p>Now if we need additional headers like supported protocols, there are no default headers here, so the client and server would need to do some custom work around it.</p>
+<p>This whole setup is still limited, we need a library over it to actually make it useful in our application, otherwise our application has to handle lots of cases.</p>
+<h2 id="building-websocket-application">Building WebSocket Application</h2>
+<p>Okay, now let&rsquo;s proceed towards building an actual app using WebSocket, and we will be learning SignalR, which is a WebSocket library.</p>
+<p>Why a library? Well, it&rsquo;s cool because it provides features like reconnection, grouping or channels broadcasts, and maintaining connection IDs.</p>
+<p>The SignalR Hubs makes it feel like remote procedure calls (RPCs) from a server to connected clients and from clients to the server. In server side code, you define methods that can be called by clients, and you call methods that run on the client. In client code, you define methods that can be called from the server, and call them. SignalR takes care of all the client-to-server plumbing for us.</p>
+<p>We just need to create a class with set of methods that will be called by client and inherit the Hub class, and that will make server side Hub, which then client will invoke.</p>
+<p>We will be working on a small Stock application and creating the backend for it.</p>
+<p>There would be a Stock class and a StockManager class. The StockManager class has all the stock-related operations like adding stock, updating price, and maintaining a list of stocks.The Stock class only represents a single stock, and it only has the necessary required parameters.</p>
+<p><a href="https://github.com/r4hu1s0n7/signalr-sockets-server">github link</a> refer for code</p>
+<pre tabindex="0"><code>public class Stock
+    {
+        public int Price { get; set; }
+        public string Name { get; set; }
+
+        public Stock(string name, int price)
+        {
+            this.Name = name;
+            this.Price = price;
+        }
+    }
+</code></pre><pre tabindex="0"><code>public class StockManager
+{
+    private static StockManager _instance;
+    List&lt;Stock&gt; stocks = new List&lt;Stock&gt;();
+    Dictionary&lt;string,List&lt;int&gt;&gt; priceHistory = new Dictionary&lt;string,List&lt;int&gt;&gt;();
+
+    public static StockManager Instance(){}
+    public void AddStock(string name, int price){}
+    public List&lt;Stock&gt; GetAllStocks(){}
+    public void UpdateStockPrices(){}
+    public List&lt;int&gt; GetStockPriceHistory(string name){}
+    private int UpdatePrice(int price){}
+    
+}
+</code></pre><p>Now we will add Hubs and Controller.</p>
+<pre tabindex="0"><code>public interface SocketHubInterface
+{
+
+    Task GetLiveUpdatesAll(List&lt;Stock&gt; stocks);
+    Task BucketAddAck(string message);
+    Task BroadcastStockPriceHistory(Dictionary&lt;string, List&lt;int&gt;&gt; stockPriceHistory);
+
+}
+</code></pre><p>So first, I have added an interface that would define the methods that we will be using. To have strong type checking among RPCs, we have added this interface. So all the RPCs we will be defining in our Hubs class need to be declared here.</p>
+<p>Then, we will create a SocketHub class and inherit from the Hub class. This is from the SignalR library, and every Hub class has to inherit it.</p>
+<pre tabindex="0"><code>public class SocketsHub : Hub&lt;SocketHubInterface&gt;
+{
+	public async Task GetLiveUpdatesAll(List&lt;Stock&gt; stocks)
+	{
+	     Clients.All.GetLiveUpdatesAll(stocks);
+	}
+}
+</code></pre><p>So this function receives a list of type Stock, and it basically broadcasts to all the connected clients, that are susbcried to “GetLiveUpdatesAll(stocks)”. How do you subscribe? Well client side code has to add listener on this method.</p>
+<p>(client subscriber)[https://learn.microsoft.com/en-us/aspnet/core/signalr/hubs?view=aspnetcore-8.0#typescript-client]</p>
+<p>same when client has to call any method on server side, they use invoke(&ldquo;server-side-rpc&rdquo;)</p>
+<pre tabindex="0"><code>// several examples
+// this will broadcast to all clients that are listening on &#39;GetLiveUpdatesAll&#39;
+Clients.All.GetLiveUpdatesAll(stocks);
+// will broadcast to caller, assuming they have implemented this method
+Clients.Caller.GetLiveUpdatesAll(stocks);
+// when we want to send data to specific client, we can use connectionId provided by Context Property
+Clients.Client(Context.ConnectionId).
+</code></pre><p>lets further implement our hub class and write other functions we defined in our interface</p>
+<pre tabindex="0"><code>    public class SocketsHub : Hub&lt;SocketHubInterface&gt;
+    {
+        public async Task GetLiveUpdatesAll(List&lt;Stock&gt; stocks)
+        {
+            await Clients.All.GetLiveUpdatesAll(stocks);
+        }
+
+
+        public async Task AddMemberToStock(string stock  )
+        {
+            string connId = Context.ConnectionId;
+            await Groups.AddToGroupAsync(connId, stock);
+            await Clients.Client(connId).BucketAddAck(&#34;Added in Bucket&#34;);
+        }
+
+        public async Task BroadcastStockPriceHistory(Dictionary&lt;string, List&lt;int&gt;&gt; stockPriceHistory)
+        {
+            Clients.Group(stockPriceHistory.Keys.First()).BroadcastStockPriceHistory(stockPriceHistory);
+            Clients.Groups(Context.ConnectionId);
+        }
+
+    }
+</code></pre><p>So what I want to do here is I want to create a virtual bucket, that could mean anything like stocks in your portfolio, stocks in your watchlist or any mutual fund, anything.</p>
+<p>And any client ID that needs a specific stock to be updated, their subscription will work as being added to that Stock&rsquo;s group, and then a broadcast for that group will be initiated on a timer basis, so this is a simple workflow as of now.</p>
+<p>I have not used await in BroadcastStockPriceHistory since I don&rsquo;t want to wait for this execution to finish and then move the code to the next line, that might cause unnecessary delay.</p>
+<p>Using await to wait until a client method finishes before the next line of code executes does not mean that clients will actually receive the message before the next line of code executes. &ldquo;Completion&rdquo; of a client method call only means that SignalR has done everything necessary to send the message.</p>
+<p>We can write a custom workaround for this, but I don&rsquo;t feel it&rsquo;s necessary for it as of now.</p>
+<p>Refer to the main repo; it has information about the API controller that allows the execution of these Hubs to be triggered by the API.</p>
+<h5 id="reference-links">reference links</h5>
+<p><a href="https://www.baeldung.com/cs/raw-sockets">https://www.baeldung.com/cs/raw-sockets</a></p>
+<p><a href="https://blog.cloudflare.com/syn-packet-handling-in-the-wild">https://blog.cloudflare.com/syn-packet-handling-in-the-wild</a></p>
+<p><a href="https://stackoverflow.com/questions/57528914/will-websockets-over-http2-also-be-multiplexed-in-streams">https://stackoverflow.com/questions/57528914/will-websockets-over-http2-also-be-multiplexed-in-streams</a></p>
+<p><a href="https://www.keil.com/pack/doc/mw6/Network/html/using_network_sockets_tcp.html">https://www.keil.com/pack/doc/mw6/Network/html/using_network_sockets_tcp.html</a></p>
+<p><a href="https://www.linkedin.com/posts/interview-ready_how-many-socket-connections-can-one-server-activity-7108811787973619712-chPT?utm_source=share&amp;utm_medium=member_desktop">https://www.linkedin.com/posts/interview-ready_how-many-socket-connections-can-one-server-activity-7108811787973619712-chPT?utm_source=share&amp;utm_medium=member_desktop</a></p>
+]]></content:encoded>
+    </item>
+    
+  </channel>
+</rss>

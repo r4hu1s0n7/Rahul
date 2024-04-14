@@ -1,0 +1,100 @@
+baseURL: "https://rahul-soni.com/"
+title: 
+paginate: 5
+theme: PaperModX
+
+
+enableRobotsTXT: true
+buildDrafts: true
+buildFuture: true
+buildExpired: true
+pygmentsUseClasses: true
+
+googleAnalytics: UA-123-45
+
+
+params:
+    env: development # to enable google analytics, opengraph, twitter-cards and schema.
+    
+    description: "ExampleSite description"
+    keywords: [Blog, Portfolio, PaperModX]
+    author: Me
+    # author: ["Me", "You"] # multiple authors
+    images: ["<link or path of image for opengraph, twitter-cards>"]
+    
+    defaultTheme: auto # dark, light
+    disableThemeToggle: true
+
+    ShowReadingTime: true
+    ShowShareButtons: false
+    ShowPostNavLinks: true
+    ShowBreadCrumbs: true
+    ShowCodeCopyButtons: true
+    disableSpecial1stPost: false
+    disableScrollToTop: true
+    comments: false
+    hidemeta: false
+    hideSummary: false
+    showtoc: false
+    tocopen: false
+    hideFooter: false
+    draft: true
+    label:
+        text: "Home"
+        icon: /apple-touch-icon.png
+        iconHeight: 35
+
+
+    # home-info mode
+    homeInfoParams:
+        Title: "Rahul Soni"
+        Content: Working in C# and .NET Environment, Past in Ruby on Rails | Python | Django | Java.
+          These days learning Distributed System Design and Architecture related concepts to grow my understanding of tech by reading Blogs and Books.
+
+    socialIcons: # optional
+      - name: "Linkedin"
+        url: "https://www.linkedin.com/in/rahul-d-soni/"
+      - name: "Github"
+        url: "https://github.com/r4hu1s0n7/"
+      - name: "email"
+        url: "mailto:rahuldsoni2001@gmail.com"
+      - name: "Twitter"
+        url: "https://twitter.com/ssoonniiii"
+
+    analytics:
+        google:
+            SiteVerificationTag: "XYZabc"
+        bing:
+            SiteVerificationTag: "XYZabc"
+        yandex:
+            SiteVerificationTag: "XYZabc"
+
+
+
+
+    # for search
+    # https://fusejs.io/api/options.html
+    fuseOpts:
+        isCaseSensitive: false
+        shouldSort: true
+        location: 0
+        distance: 1000
+        threshold: 0.4
+        minMatchCharLength: 0
+        keys: ["title", "permalink", "summary", "content"]
+menu:
+    main:
+        - identifier: home
+          name: home
+          url: /
+          weight: 10
+        - identifier: posts
+          name: posts
+          url: /posts/
+          weight: 20
+        - identifier: about
+          name: about
+          url: /about/
+          weight: 30
+
+
