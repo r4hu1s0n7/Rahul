@@ -1,34 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Diving into Sockets | </title>
 <meta name="keywords" content="">
 <meta name="description" content="This discussion is based on learning about sockets from scratch to trying to build an application.
 Basic Google definition is: A socket is a communication endpoint in a computer network that allows two computers to communicate with each other.
 So, on a daily basis, for simplicity, we use WebSockets, or more accurately, we use a library for WebSockets. The WebSocket protocol, which is a browser-focused extension of sockets, uses TCP sockets behind the scenes.">
 <meta name="author" content="Me">
-<link rel="canonical" href="https://rahul-soni.com/posts/tempblog/">
+<link rel="canonical" href="http://localhost:1313/posts/tempblog/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.min.5937c15b275b6452e57c63bf684011825482e172cda18980f78d82d3141aee15.css" integrity="sha256-WTfBWydbZFLlfGO/aEARglSC4XLNoYmA942C0xQa7hU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://rahul-soni.com/favicon.ico">
-<link rel="apple-touch-icon" href="https://rahul-soni.com/apple-touch-icon.png">
-<link rel="alternate" hreflang="en" href="https://rahul-soni.com/posts/tempblog/">
-
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'UA-123-45', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script><meta name="twitter:card" content="summary" />
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/tempblog/">
+<meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Diving into Sockets | " />
 <meta name="twitter:description" content="This discussion is based on learning about sockets from scratch to trying to build an application.
 Basic Google definition is: A socket is a communication endpoint in a computer network that allows two computers to communicate with each other.
@@ -38,8 +26,8 @@ So, on a daily basis, for simplicity, we use WebSockets, or more accurately, we 
 Basic Google definition is: A socket is a communication endpoint in a computer network that allows two computers to communicate with each other.
 So, on a daily basis, for simplicity, we use WebSockets, or more accurately, we use a library for WebSockets. The WebSocket protocol, which is a browser-focused extension of sockets, uses TCP sockets behind the scenes." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://rahul-soni.com/posts/tempblog/" />
-    <meta property="og:image" content="https://rahul-soni.com/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"/>
+<meta property="og:url" content="http://localhost:1313/posts/tempblog/" />
+    <meta property="og:image" content="http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"/>
 <meta property="article:section" content="posts" />
   <meta property="article:published_time" content="2022-04-12T00:00:00&#43;00:00" />
   <meta property="article:modified_time" content="2022-04-12T00:00:00&#43;00:00" />
@@ -54,13 +42,13 @@ So, on a daily basis, for simplicity, we use WebSockets, or more accurately, we 
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "https://rahul-soni.com/posts/"
+      "item": "http://localhost:1313/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Diving into Sockets",
-      "item": "https://rahul-soni.com/posts/tempblog/"
+      "item": "http://localhost:1313/posts/tempblog/"
     }
   ]
 }
@@ -85,14 +73,14 @@ So, on a daily basis, for simplicity, we use WebSockets, or more accurately, we 
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://rahul-soni.com/posts/tempblog/"
+    "@id": "http://localhost:1313/posts/tempblog/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://rahul-soni.com/favicon.ico"
+      "url": "http://localhost:1313/favicon.ico"
     }
   }
 }
@@ -213,17 +201,17 @@ function toggleThemeListener() {
         </div>
         <ul id="menu">
             <li>
-                <a href="https://rahul-soni.com/" title="home" class="active"
+                <a href="http://localhost:1313/" title="home" class="active"
                 >home
                 </a>
             </li>
             <li>
-                <a href="https://rahul-soni.com/posts/" title="posts" class="active"
+                <a href="http://localhost:1313/posts/" title="posts" class="active"
                 >posts
                 </a>
             </li>
             <li>
-                <a href="https://rahul-soni.com/about/" title="about"
+                <a href="http://localhost:1313/about/" title="about"
                 >about
                 </a>
             </li>
@@ -234,7 +222,7 @@ function toggleThemeListener() {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://rahul-soni.com/">Home</a>&nbsp;»&nbsp;<a href="https://rahul-soni.com/posts/">Posts</a></div><h1 class="post-title">Diving into Sockets</h1>
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div><h1 class="post-title">Diving into Sockets</h1>
     <div class="post-meta"><span class="meta-item">
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar" style="user-select: text;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" style="user-select: text;"></rect><line x1="16" y1="2" x2="16" y2="6" style="user-select: text;"></line><line x1="8" y1="2" x2="8" y2="6" style="user-select: text;"></line><line x1="3" y1="10" x2="21" y2="10" style="user-select: text;"></line></svg>
   <span>April 12, 2022</span></span><span class="meta-item">

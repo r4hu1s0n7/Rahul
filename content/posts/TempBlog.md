@@ -1,6 +1,7 @@
 ---
 title: "Diving into Sockets"
 date: "2022-04-12"
+draft: false
 ---
 This discussion is based on  learning about sockets from scratch to trying to build an application.
 

@@ -1,4 +1,4 @@
-baseURL: "/"
+baseURL: "https://r4hu1s0n7.github.io/Rahul/"
 title: 
 paginate: 5
 theme: PaperModX
@@ -12,7 +12,6 @@ pygmentsUseClasses: true
 
 googleAnalytics: UA-123-45
 
-publishDir: "docs"
 params:
     env: development # to enable google analytics, opengraph, twitter-cards and schema.
     
